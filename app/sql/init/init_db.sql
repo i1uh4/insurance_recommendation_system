@@ -9,6 +9,33 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_created_at ON users(created_at);
+CREATE INDEX IF NOT EXISTS idx_users_is_verified ON users(is_verified);
+
+-- Create user_info table
+CREATE TABLE IF NOT EXISTS user_info (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+
+    first_name TEXT,
+    last_name TEXT,
+    age INT,
+    gender TEXT,
+    occupation TEXT,
+    income DOUBLE PRECISION,
+    marital_status TEXT,
+    has_children BOOLEAN,
+    has_vehicle BOOLEAN,
+    has_home BOOLEAN,
+    has_medical_conditions BOOLEAN,
+    travel_frequency TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_age ON user_info(age);
+CREATE INDEX IF NOT EXISTS idx_users_id ON user_info(user_id);
+CREATE INDEX IF NOT EXISTS idx_users_gender ON user_info(gender);
+
 -- Create insurance_categories table
 CREATE TABLE IF NOT EXISTS insurance_categories (
     id SERIAL PRIMARY KEY,
@@ -16,6 +43,8 @@ CREATE TABLE IF NOT EXISTS insurance_categories (
     description TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS idx_insurance_categories_name ON insurance_categories(name);
 
 -- Create insurances table
 CREATE TABLE IF NOT EXISTS insurances (
@@ -30,19 +59,10 @@ CREATE TABLE IF NOT EXISTS insurances (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create user_preferences table
-CREATE TABLE IF NOT EXISTS user_preferences (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    age INTEGER NOT NULL,
-    income DECIMAL(15, 2) NOT NULL,
-    occupation VARCHAR(255) NOT NULL,
-    health_condition VARCHAR(255) NOT NULL,
-    family_size INTEGER NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id)
-);
+CREATE INDEX IF NOT EXISTS idx_insurances_name ON insurances(name);
+CREATE INDEX IF NOT EXISTS idx_insurance_coverage ON insurances(coverage);
+CREATE INDEX IF NOT EXISTS idx_insurances_created_at ON insurances(created_at);
+CREATE INDEX IF NOT EXISTS idx_insurances_category_id ON insurances(category_id);
 
 -- Create recommendations table
 CREATE TABLE IF NOT EXISTS recommendations (
@@ -56,6 +76,13 @@ CREATE TABLE IF NOT EXISTS recommendations (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, insurance_id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_recommendations_user_id ON recommendations(user_id);
+CREATE INDEX IF NOT EXISTS idx_recommendations_insurance_id ON recommendations(insurance_id);
+CREATE INDEX IF NOT EXISTS idx_recommendations_score ON recommendations(score);
+CREATE INDEX IF NOT EXISTS idx_recommendations_is_viewed ON recommendations(is_viewed);
+CREATE INDEX IF NOT EXISTS idx_recommendations_is_purchased ON recommendations(is_purchased);
+CREATE INDEX IF NOT EXISTS idx_recommendations_created_at ON recommendations(created_at);
 
 -- Insert default insurance categories
 INSERT INTO insurance_categories (name, description) VALUES

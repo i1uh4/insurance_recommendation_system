@@ -41,14 +41,12 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     )
 
     try:
-        # Decode token
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("user_id")
 
         if user_id is None:
             raise credentials_exception
 
-        # Get user from database
         user_result = execute_sql_file("users/get_user_by_id.sql", {"id": user_id})
 
         if not user_result:

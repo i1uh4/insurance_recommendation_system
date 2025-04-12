@@ -6,7 +6,6 @@ from typing import Optional, List
 from datetime import datetime
 
 
-# SQLAlchemy Models
 class InsuranceCategory(Base):
     __tablename__ = "insurance_categories"
 
@@ -30,7 +29,6 @@ class Insurance(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
 
-# Pydantic Models
 class CategoryBase(BaseModel):
     name: str
     description: Optional[str] = None
